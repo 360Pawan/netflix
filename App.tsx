@@ -15,17 +15,50 @@ const App = () => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{title: 'Home Screen'}}
+          options={{
+            title: 'Netflix watching list',
+            headerShadowVisible: false,
+            headerTintColor: '#00214d',
+            headerStyle: {
+              backgroundColor: '#fffffe',
+            },
+            headerTitleStyle: {
+              fontSize: 24,
+              fontWeight: '600',
+            },
+          }}
         />
         <Stack.Screen
           name="Add"
           component={Add}
-          options={{title: 'Add Screen'}}
+          options={{
+            title: 'Add Season',
+            headerShadowVisible: false,
+            headerTintColor: '#00214d',
+            headerStyle: {
+              backgroundColor: '#fffffe',
+            },
+            headerTitleStyle: {
+              fontSize: 24,
+              fontWeight: '600',
+            },
+          }}
         />
         <Stack.Screen
           name="Edit"
           component={Edit}
-          options={{title: 'Edit Screen'}}
+          options={{
+            title: 'Edit Season',
+            headerShadowVisible: false,
+            headerTintColor: '#00214d',
+            headerStyle: {
+              backgroundColor: '#fffffe',
+            },
+            headerTitleStyle: {
+              fontSize: 24,
+              fontWeight: '600',
+            },
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
