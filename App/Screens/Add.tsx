@@ -40,9 +40,12 @@ const Add = ({
 
       if (storedValues) {
         const seasons = JSON.parse(storedValues);
-        const newValue = [...seasons, season];
+        const newSeasonList = [...seasons, season];
 
-        await AsyncStorage.setItem('@Seasons_list', JSON.stringify(newValue));
+        await AsyncStorage.setItem(
+          '@Seasons_list',
+          JSON.stringify(newSeasonList),
+        );
       } else {
         await AsyncStorage.setItem('@Seasons_list', JSON.stringify([season]));
       }
@@ -61,13 +64,13 @@ const Add = ({
         <TextInput
           style={styles.input}
           value={name}
-          onChange={text => setName(text.nativeEvent.text)}
+          onChangeText={text => setName(text)}
           placeholder="Enter season name"
         />
         <TextInput
           style={styles.input}
           value={episodeCount}
-          onChange={text => setEpisodeCount(text.nativeEvent.text)}
+          onChangeText={text => setEpisodeCount(text)}
           placeholder="Enter number of episodes"
           keyboardType="numeric"
         />

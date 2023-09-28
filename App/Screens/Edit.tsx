@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   TextInput,
   StyleSheet,
@@ -7,22 +7,33 @@ import {
   Text,
 } from 'react-native';
 import 'react-native-get-random-values';
-import {nanoid} from 'nanoid';
 import Snackbar from 'react-native-snackbar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Layout from '@app/Layout/Layout';
+import {SeasonType} from './Home';
 
 const Edit = ({
   navigation,
+  route,
 }: {
-  navigation: {navigate: (routeName: string) => void};
+  navigation?: {navigate: (routeName: string) => void};
+  route?: {
+    key: string;
+    name: string;
+    params: string;
+    path?: undefined;
+  };
 }) => {
-  const [name, setName] = useState('');
-  const [episodeCount, setEpisodeCount] = useState('');
+  const [season, setSeason] = useState<SeasonType>({
+    id: '',
+    name: '',
+    episodeCount: '',
+    isWatched: false,
+  });
 
-  const addItem = async () => {
-    if (!name || !episodeCount) {
+  const updateItem = async () => {
+    if (!season.name || !season.episodeCount) {
       return Snackbar.show({
         text: 'Both fields are required.',
         backgroundColor: '#33272a',
@@ -30,49 +41,61 @@ const Edit = ({
     }
 
     try {
-      const season = {
-        id: nanoid(),
-        name,
-        episodeCount,
-        isWatched: false,
-      };
       const storedValues = await AsyncStorage.getItem('@Seasons_list');
 
       if (storedValues) {
         const seasons = JSON.parse(storedValues);
-        const newValue = [...seasons, season];
+        const newSeasonList = seasons.map((existingSeason: SeasonType) => {
+          if (existingSeason.id === season.id) {
+            return {...season};
+          }
 
-        await AsyncStorage.setItem('@Seasons_list', JSON.stringify(newValue));
-      } else {
-        await AsyncStorage.setItem('@Seasons_list', JSON.stringify([season]));
+          return existingSeason;
+        });
+
+        await AsyncStorage.setItem(
+          '@Seasons_list',
+          JSON.stringify(newSeasonList),
+        );
+        navigation?.navigate('Home');
       }
-
-      setName('');
-      setEpisodeCount('');
-      navigation.navigate('Home');
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const getSeason = async () => {
+      if (route?.params) {
+        setSeason(JSON.parse(route?.params));
+      }
+    };
+
+    getSeason();
+  }, [route?.params]);
 
   return (
     <Layout>
       <View style={styles.container}>
         <TextInput
           style={styles.input}
-          value={name}
-          onChange={text => setName(text.nativeEvent.text)}
+          value={season?.name}
+          onChangeText={text =>
+            setSeason(prevSeason => ({...prevSeason, name: text}))
+          }
           placeholder="Enter season name"
         />
         <TextInput
           style={styles.input}
-          value={episodeCount}
-          onChange={text => setEpisodeCount(text.nativeEvent.text)}
+          value={season?.episodeCount}
+          onChangeText={text =>
+            setSeason(prevSeason => ({...prevSeason, episodeCount: text}))
+          }
           placeholder="Enter number of episodes"
           keyboardType="numeric"
         />
-        <TouchableOpacity style={styles.button} onPress={addItem}>
-          <Text style={styles.buttonText}>Add Season</Text>
+        <TouchableOpacity style={styles.button} onPress={updateItem}>
+          <Text style={styles.buttonText}>Update Season</Text>
         </TouchableOpacity>
       </View>
     </Layout>

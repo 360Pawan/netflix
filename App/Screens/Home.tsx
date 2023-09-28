@@ -9,7 +9,7 @@ import Fab from '@app/Components/Fab';
 import Layout from '@app/Layout/Layout';
 import {TouchableOpacity} from 'react-native';
 
-type SeasonType = {
+export type SeasonType = {
   id: string;
   name: string;
   episodeCount: string;
@@ -19,7 +19,7 @@ type SeasonType = {
 const Home = ({
   navigation,
 }: {
-  navigation: {navigate: (routeName: string) => void};
+  navigation: {navigate: (routeName: string, params?: {}) => void};
 }) => {
   const isFocused = useIsFocused();
 
@@ -89,9 +89,9 @@ const Home = ({
                 </View>
                 <View style={styles.item}>
                   <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('Edit');
-                    }}>
+                    onPress={() =>
+                      navigation.navigate('Edit', JSON.stringify(season))
+                    }>
                     <Icons name="edit" size={24} color="#00ebc7" />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => deleteSeason(season.id)}>
